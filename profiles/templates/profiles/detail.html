@@ -1,0 +1,86 @@
+{% extends 'profiles/base.html' %}
+
+{% block content %}
+  <div class="profile" id="profile">
+    <div class="sidebar">
+      <div class="picture">
+        <img class="picture-url" src="{{ profile.picture_url }}" />
+      </div>
+      <div class="name">
+        <a href="/profiles/{{ profile.handle }}">{{ profile.name }}</a>
+      </div>
+      <div class="handle">
+        <a href="/profile/{{ profile.handle }}">
+          @<span class="handle-text">{{ profile.handle }}</span>
+        </a>
+      </div>
+      <div class="bio section">
+        {{ profile.bio }}
+      </div>
+      {% if profile.city %}
+        <div class="city section">
+          <i class="fa fa-map-marker" aria-hidden="true"></i>
+          {{ profile.city }}
+        </div>
+      {% endif %}
+      {% if profile.website_url %}
+        <div class="website-url section">
+          <i class="fa fa-link" aria-hidden="true"></i>
+          <a href="{{ profile.website_url }}" target="_blank">
+            {{ profile.website_url }}
+          </a>
+        </div>
+      {% endif %}
+      <div class="joined section">
+        <i class="fa fa-calendar" aria-hidden="true"></i>
+        Joined {{ profile.created_at | date:"F Y" }}
+      </div>
+      <div class="tweet section">
+        <button class="btn btn-primary" v-on:click="openTweetModal">
+          <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+          Tweet to {{ profile.name }}
+        </button>
+      </div>
+    </div>
+
+    <div class="twitter-clone-modal" v-cloak v-if="isTweetModalVisible">
+      <div class="tweet-form" v-on:click="noop">
+        <div class="title">
+          <span class="title-text">
+            Tweet to {{ profile.name }}
+          </span>
+          <span class="close-modal" v-on:click="closeTweetModal">
+            <i class="fa fa-times" aria-hidden="true"></i>
+          </span>
+        </div>
+        <div class="tweet">
+          <textarea class="tweet-text" v-model="tweet"></textarea>
+        </div>
+        <div class="buttons">
+          <div class="send-group">
+            {% verbatim %}
+            <span class="chars-left" v-cloak v-bind:class="{ red: getCharsLeft(tweet) < 0 }">
+              {{ getCharsLeft(tweet) }}
+            </span>
+            {% endverbatim %}
+            <button class="send-tweet btn btn-primary" v-bind:disabled="getCharsLeft(tweet) < 0">
+              <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+              Tweet
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    var pageData = {
+      profile: {
+        handle: "{{ profile.handle }}"
+      }
+    };
+  </script>
+  <script src="/static/js/profiles/detail.js"></script>
+{% endblock %}

@@ -1,0 +1,5 @@
+db.sqlite*
+.ruby-version
+.sass-cache/
+.DS_Store
+__pycache__/
